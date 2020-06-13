@@ -1,4 +1,6 @@
-""" name: Sayed Abdul Hakim    email: sayedhakim27@gmail.com
+""" name: Sayed Abdul Hakim    email: sayedhakim27@gmail.com when anything gets wrong email me
+TRAVEL PLANNING Application Using A Star Search Algorithm
+developed in PyCharm IDE
 
 # important note should install the following two libraries first to run the code
 # pip install pandas
