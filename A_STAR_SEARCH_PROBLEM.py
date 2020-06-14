@@ -7,6 +7,7 @@ developed in PyCharm IDE
 # pip install pandas
 # pip install xlrd
 """
+
 from datetime import datetime
 from math import radians, sin, cos, acos
 
@@ -95,30 +96,31 @@ def validate_day_input(day):
 
 # to check if the needed day is within the day of the flight or not
 def validate_flight(start_day, end_day, prev_flight, curr_flight):
-    days_dict_string = {"sat": 1, "sun": 2, "mon": 3, "tue": 4, "wed": 5, "thu": 6, "fri": 7, "sat": 8, "sun": 9,
-                        "mon": 10, "tue": 11, "wed": 12, "thu": 13, "fri": 14}
-    days_dict_int = {1: "sat", 2: "sun", 3: "mon", 4: "tue", 5: "wed", 6: "thu", 7: "fri"}
-    if not days_dict_string.__contains__(start_day) or not days_dict_string.__contains__(end_day):
+    days_dict_string = {"sat": 1, "sun": 2, "mon": 3, "tue": 4, "wed": 5, "thu": 6, "fri": 7}
+    days_dict_int = {1: "sat", 2: "sun", 3: "mon", 4: "tue", 5: "wed", 6: "thu", 7: "fri", 8: "sat", 9: "sun",
+                     10: "mon", 11: "tue", 12: "wed", 13: "thu", 14: "fri", }
+    if not days_dict_string.__contains__(start_day) or not days_dict_string.__contains__(
+            end_day) or not days_dict_string.__contains__(curr_flight.day):
         return False
     start_day_int = days_dict_string.get(start_day)
     end_day_int = days_dict_string.get(end_day)
-    handle_day = 0
-    if start_day_int > end_day_int:
-        # means that user want start day from this week but end day in the next week
-        handle_day = 7
-    end_day_int += handle_day
+    curr_flight_day_int = days_dict_string.get(curr_flight.day)
 
     time_valid = True
     if prev_flight is not None:
         if days_dict_string.get(prev_flight.day) > days_dict_string.get(curr_flight.day):
             # means that the last flight to reach current node comes on day greater than current flight
+            # print("test not matching prev with curr flight time")
             return False
         time_valid = validate_time(prev_flight.arrival, curr_flight.departure)
         if prev_flight.arrival < prev_flight.departure:
             # means that the flight will arrive in the next day so we will increase the flight day on day
             curr_flight.day = days_dict_int.get(days_dict_string.get(prev_flight.day) + 1)
+            curr_flight_day_int = days_dict_string.get(curr_flight.day)
+            if curr_flight_day_int is None:
+                return False
 
-    if start_day_int <= (days_dict_string.get(curr_flight.day) + handle_day) <= end_day_int and time_valid:
+    if start_day_int <= curr_flight_day_int <= end_day_int and time_valid:
         return True
     return False
 
@@ -225,7 +227,8 @@ def validate_expanded_list(_available_to_expand_list):
 
 
 def get_best_node_to_expand(_available_to_expand_list, goal):
-    if _available_to_expand_list is None or len(_available_to_expand_list) > len(flights):
+    if _available_to_expand_list is None or len(_available_to_expand_list) > len(flights) or len(
+            _available_to_expand_list) == 0:
         print("exceeded length of the flights")
         _print_from_source_to_goal_flights([])
         return None
@@ -332,7 +335,7 @@ while True:
     # goal_nodes_list = []
     expanded_list = []
     print()
-    print("********** Welcome in Travel Planning Application **********")
+    print("******************  Welcome in Travel Planning Application  ******************")
     print()
     source_input = input("Enter Source City: ")
     if get_city(source_input) is None:
@@ -370,4 +373,3 @@ while True:
     else:
         print("********************* thank you  ************************** ")
         break
-
